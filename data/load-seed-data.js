@@ -27,11 +27,10 @@ async function run() {
     await Promise.all(
       skateboards.map(board => {
         return client.query(`
-                    INSERT INTO skateboards (id, name, description, category, price, owner_id)
-                    VALUES ($1, $2, $3, $4, $5, $6);
+                    INSERT INTO skateboards (name, description, category, price, owner_id)
+                    VALUES ($1, $2, $3, $4, $5);
                 `,
         [
-          board.id,
           board.name,
           board.description,
           board.category,
