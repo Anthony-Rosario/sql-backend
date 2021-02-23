@@ -117,5 +117,90 @@ describe('app routes', () => {
 
       expect(nothing.body).toEqual('');
     });
+
+    test('creates a new skateboard', async() => {
+      const newBoard = {
+        name: 'Enjoi Whitey Panda Deck',
+        description: 'has some cool griptape and some cool wheels',
+        category: 'skateboard',
+        price: 65
+        
+      };
+
+      const expectedBoard = {
+        ...newBoard,
+        id: 7,
+        owner_id: 1
+      };
+
+      const data = await fakeRequest(app)
+        .post('/skateboards')
+        .send(newBoard)
+        .expect('Content-Type', /json/)
+        .expect(200);
+        
+      
+      expect(data.body).toEqual(expectedBoard);
+
+      const allBoards = await fakeRequest(app)
+        .get('/skateboards')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const enjoiBoard = allBoards.body.find(board => board.name === 'Enjoi Whitey Panda Deck');
+
+      expect(enjoiBoard).toEqual(expectedBoard);
+    });
+
+    test('updates a skateboard', async() => {
+      const newBoard = {
+        name: 'Bennett Emotional Baggage Deck',
+        description: 'Size: 8.125" Wheelbase: 14"',
+        category: 'skateboard',
+        price: 55,
+      };
+
+      const expectedBoard = {
+        ...newBoard,
+        owner_id: 1,
+        id: 1
+      };
+
+      await fakeRequest(app)
+        .put('/skateboards/1')
+        .send(newBoard)
+        .expect('Content-Type', /json/)
+        .expect(200);
+      const updatedBoard = await fakeRequest(app)
+        .get('/skateboards/1')
+        .expect('Content-Type', /json/)
+        .expect(200);
+      
+      expect(updatedBoard.body).toEqual(expectedBoard);
+    });
+
+    test('deletes a single skateboard with the matching id', async() => {
+      const expectation = {
+        'id': 3,
+        'name': 'Santa Cruz Delfino Tarot Card',
+        'description': 'Size: 8.25" Wheelbase: 14"',
+        'category': 'skateboard',
+        'price': 65,
+        'owner_id': 1
+      };
+
+      const data = await fakeRequest(app)
+        .delete('/skateboards/3')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+
+      const nothing = await fakeRequest(app)
+        .get('/skateboards/3')
+        .expect('Content-Type', /json/)
+        .expect(200);
+      expect(nothing.body).toEqual('');
+    });
   });
 });
