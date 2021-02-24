@@ -10,7 +10,8 @@ async function run() {
     
     await client.query(`
             DROP TABLE IF EXISTS users CASCADE;
-            DROP TABLE IF EXISTS skateboards;
+            DROP TABLE IF EXISTS categories CASCADE;
+            DROP TABLE IF EXISTS skateboards
         `);
 
     console.log(' drop tables complete', getEmoji(), getEmoji(), getEmoji());
